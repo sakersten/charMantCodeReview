@@ -66,7 +66,18 @@ int main()
     else
     {
         //display error message
-        cout<<"Error on add"<<endl;
+        cout<<"Error on subtract"<<endl;
+    }
+
+    if(multiply(c1, n1, d1, c2, n2, d2, answer, 10))
+    {
+        //display string with answer
+        cout<<"Answer: "<<answer<<endl;
+    }
+    else
+    {
+        //display error message
+        cout<<"Error on multiply"<<endl;
     }
 
     if(divide(c1, n1, d1, c2, n2, d2, answer, 10))
@@ -100,8 +111,8 @@ bool mantissa(const char numString[], int& numerator, int& denominator)
 //--
 bool add(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len)
 {
-    //error handling improper fractions
-    if (d1 == 0 || d2 == 0) {
+    //error handling improper fractions and 0 length
+    if (d1 == 0 || d2 == 0 || len == 0) {
         return false;
     }
 
@@ -131,6 +142,10 @@ bool add(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len)
         total = total / 10;
         resultLength++;
     }
+    //if the whole number is greater than the length given
+    if (resultLength > len-1) {
+        return false;
+    }
 
     //add remainder after the decimal place
     if (remainder != 0) {
@@ -157,8 +172,8 @@ bool add(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len)
 //--
 bool subtract(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len)
 {
-    //error handling improper fractions
-    if (d1 == 0 || d2 == 0) {
+    //error handling improper fractions and 0 length
+    if (d1 == 0 || d2 == 0 || len == 0) {
         return false;
     }
 
@@ -177,16 +192,13 @@ bool subtract(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
         subtractedNumerator = (numeratorFirstNum * d2) - (numeratorSecondNum * d1);
     }
 
-    //check if subtractedNumerator negative
-    bool isNegative = false;
+    int resultLength = 0;
+    //if negative add the sign
     if (subtractedNumerator < 0) {
         subtractedNumerator = subtractedNumerator * -1;
-        isNegative = true;
+        result[resultLength] = '-';
+        resultLength++;
     }
-    //if negative add the sign
-    int resultLength = 0;
-    result[resultLength] = '-';
-    resultLength++;
 
     //get number before decimal
     int total = subtractedNumerator / lcm;
@@ -197,6 +209,10 @@ bool subtract(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
         result[resultLength] = '0' + total;
         total = total / 10;
         resultLength++;
+    }
+    //if the whole number is greater than the length given
+    if (resultLength > len-1) {
+        return false;
     }
 
     //add remainder after the decimal place
@@ -224,6 +240,13 @@ bool subtract(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
 //--
 bool multiply(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len)
 {
+
+
+
+
+
+
+
     //hard coded return value to make the code compile
     //you will have to come up with an algorithm to multiply the two numbers
     return true;
