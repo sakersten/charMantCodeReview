@@ -90,24 +90,61 @@ bool mantissa(const char numString[], int& numerator, int& denominator)
 //--
 bool add(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len)
 {
-    //you will have to come up with an algorithm to add the two numbers
-    //hard coded return value to make the main() work
-    result[0] = '4';
-    result[1] = '.';
-    result[2] = '1';
-    result[3] = '6';
-    result[4] = '6';
-    result[5] = '6';
-    result[6] = '6';
-    result[7] = '6';
-    result[8] = '6';
-    result[9] = '\0';
+    //get the numerators of both numbers
+    int numeratorFirstNum = c1 * d1 + n1;
+    int numeratorSecondNum = c2 * d2 + n2;
+    //get the total numerator
+    int totalNumerator = numeratorFirstNum + numeratorSecondNum;
 
+    int lcm = d1;
+    //if the denominators are not equal
+    if (d1 != d2) {
+        //get least common denominator
+        lcm = d1 * d2;
+        //get the total numerator with the lcm
+        totalNumerator = (numeratorFirstNum * d2) + (numeratorSecondNum * d1);
+    }
+    //get number before decimal
+    int total = totalNumerator / lcm;
+    //get remainder
+    int remainder = totalNumerator % lcm;
+    //add whole number before decimal to result
+    int resultLength = 0;
+    while (total != 0) {
+        result[resultLength] = '0' + total;
+        total = total / 10;
+        resultLength++;
+    }
+    //add remainder after the decimal place
+    if (remainder != 0) {
+        //add decimal place
+        result[resultLength] = '.';
+        resultLength++;
+        int currentLength = resultLength;
+        //loop until length is reached or remainder is 0
+        for (int j = 0; j < len - currentLength - 1 && remainder != 0; j++) {
+            //get the next digit
+            remainder *= 10;
+            int nextDigit = remainder / lcm;
+            //add to result
+            result[resultLength] = '0' + nextDigit;
+            resultLength++;
+            //get next remainder
+            remainder = remainder % lcm;
+        }
+    }
+    //add newline character to end of result
+    result[resultLength] = '\0';
     return true;
 }
 //--
 bool subtract(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len)
 {
+    //1.5-2.66_
+
+
+
+    
     //hard coded return value to make the code compile
     //you will have to come up with an algorithm to subtract the two numbers
     return true;
