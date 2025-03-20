@@ -240,7 +240,55 @@ bool subtract(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
 //--
 bool multiply(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len)
 {
+    //error handling improper fractions and 0 length
+    if (d1 == 0 || d2 == 0 || len == 0) {
+        return false;
+    }
 
+    //get the numerators of both numbers
+    int numeratorFirstNum = c1 * d1 + n1;
+    int numeratorSecondNum = c2 * d2 + n2;
+    //get the totals
+    int totalNumerator = numeratorFirstNum * numeratorSecondNum;
+    int totalDenominator = d1 * d2;
+
+    //get number before decimal
+    int total = totalNumerator / totalDenominator;
+    //get remainder
+    int remainder = totalNumerator % totalDenominator;
+    //add whole number before decimal to result
+    int resultLength = 0;
+    while (total != 0) {
+        result[resultLength] = '0' + total;
+        total = total / 10;
+        resultLength++;
+    }
+    //if the whole number is greater than the length given
+    if (resultLength > len-1) {
+        return false;
+    }
+
+    //add remainder after the decimal place
+    if (remainder != 0) {
+        //add decimal place
+        result[resultLength] = '.';
+        resultLength++;
+        int currentLength = resultLength;
+        //loop until length is reached or remainder is 0
+        for (int j = 0; j < len - currentLength - 1 && remainder != 0; j++) {
+            //get the next digit
+            remainder *= 10;
+            int nextDigit = remainder / totalDenominator;
+            //add to result
+            result[resultLength] = '0' + nextDigit;
+            resultLength++;
+            //get next remainder
+            remainder = remainder % totalDenominator;
+        }
+    }
+    //add newline character to end of result
+    result[resultLength] = '\0';
+    return true;
 
 
 
