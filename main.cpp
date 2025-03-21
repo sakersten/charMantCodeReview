@@ -167,6 +167,38 @@ bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int l
 //
 
 // CHARACTERISTIC AND MANTISSA HELPER FUNCTIONS
+
+// helper function to skip over leading spaces
+int skipLeadingSpaces(const char numString[])
+{
+    int i = 0; 
+    while (numString[i] == ' ')
+    {
+        i++; 
+    }
+    return i; // returns the index of the first non-space character 
+}
+
+// helper function to skip over middle space -> returns false if no middle spaces are found
+bool hasMiddleSpaces(const char numString[])
+{
+    // bool that is set to true when we come across a digit
+    bool foundDigit = false; 
+
+    for (int i = 0; numString[i] != '\0'; i++)
+    {
+        if (numString[i] >= '0' && numString[i] <= '9')
+        {
+            foundDigit = true; // found a digit
+        }
+        else if (numString[i] == ' ' && foundDigit)
+        {
+            return true; // a space has been found AFTER a digit
+        }
+    }
+    return false; // no middle spaces were found
+}
+
 // helper function to check if we have a valid c-string
 bool validString(const char numString[]) 
 {
