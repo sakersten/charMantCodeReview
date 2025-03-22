@@ -121,6 +121,7 @@ bool add(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len)
     }
 
     //get the numerators of both numbers
+    //if c is negative do something like c1 * d1 - n1
     int numeratorFirstNum = c1 * d1 + n1;
     int numeratorSecondNum = c2 * d2 + n2;
     //get the total numerator
@@ -135,16 +136,30 @@ bool add(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len)
         totalNumerator = (numeratorFirstNum * d2) + (numeratorSecondNum * d1);
     }
 
+    int resultLength = 0;
+    //if negative add the sign
+    if (totalNumerator < 0) {
+        totalNumerator = totalNumerator * -1;
+        result[resultLength] = '-';
+        resultLength++;
+    }
+
     //get number before decimal
     int wholeNumber = totalNumerator / lcm;
     //get remainder
     int remainder = totalNumerator % lcm;
+
     //add whole number before decimal to result
-    int resultLength = 0;
-    while (wholeNumber != 0) {
-        result[resultLength] = '0' + wholeNumber;
-        wholeNumber = wholeNumber / 10;
+    if (wholeNumber == 0) {
+        result[resultLength] = '0';
         resultLength++;
+    }
+    else {
+        while (wholeNumber != 0) {
+            result[resultLength] = '0' + wholeNumber;
+            wholeNumber = wholeNumber / 10;
+            resultLength++;
+        }
     }
     //if the whole number is greater than the length given
     if (!checkLength(resultLength, len)) {
@@ -195,10 +210,16 @@ bool subtract(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
     //get remainder
     int remainder = subtractedNumerator % lcm;
     //add whole number before decimal to result
-    while (wholeNumber != 0) {
-        result[resultLength] = '0' + wholeNumber;
-        wholeNumber = wholeNumber / 10;
+    if (wholeNumber == 0) {
+        result[resultLength] = '0';
         resultLength++;
+    }
+    else {
+        while (wholeNumber != 0) {
+            result[resultLength] = '0' + wholeNumber;
+            wholeNumber = wholeNumber / 10;
+            resultLength++;
+        }
     }
     //if the whole number is greater than the length given
     if (!checkLength(resultLength, len)) {
@@ -234,10 +255,16 @@ bool multiply(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
     int remainder = totalNumerator % totalDenominator;
     //add whole number before decimal to result
     int resultLength = 0;
-    while (wholeNumber != 0) {
-        result[resultLength] = '0' + wholeNumber;
-        wholeNumber = wholeNumber / 10;
+    if (wholeNumber == 0) {
+        result[resultLength] = '0';
         resultLength++;
+    }
+    else {
+        while (wholeNumber != 0) {
+            result[resultLength] = '0' + wholeNumber;
+            wholeNumber = wholeNumber / 10;
+            resultLength++;
+        }
     }
     //if the whole number is greater than the length given
     if (!checkLength(resultLength, len)) {
