@@ -43,59 +43,60 @@ int main()
     int c1, n1, d1;
     int c2, n2, d2;
 
-    //initialize the values
-    c1 = 1;
-    n1 = 1;
-    d1 = 2;
+    for (int i = 0; i < 100; i++) {
+        //initialize the values
+        c1 = i;
+        n1 = 1;
+        d1 = 2;
 
-    c2 = 2;
-    n2 = 2;
-    d2 = 3; 
+        c2 = 2;
+        n2 = 2;
+        d2 = 3; 
 
-    //if the c-string can hold at least the characteristic
-    if(add(c1, n1, d1, c2, n2, d2, answer, 10))
-    {
-        //display string with answer 4.1666666 (cout stops printing at the null terminating character)
-        cout<<"Answer: "<<answer<<endl;
-    }
-    else
-    {
-        //display error message
-        cout<<"Error on add"<<endl;
-    }
+        //if the c-string can hold at least the characteristic
+        if(add(c1, n1, d1, c2, n2, d2, answer, 10))
+        {
+            //display string with answer 4.1666666 (cout stops printing at the null terminating character)
+            cout<<"Answer: "<<answer<<endl;
+        }
+        else
+        {
+            //display error message
+            cout<<"Error on add"<<endl;
+        }
+/*
+        if(subtract(c1, n1, d1, c2, n2, d2, answer, 10))
+        {
+            cout<<"Answer: "<<answer<<endl;
+        }
+        else
+        {
+            //display error message
+            cout<<"Error on subtract"<<endl;
+        }
 
-    if(subtract(c1, n1, d1, c2, n2, d2, answer, 10))
-    {
-        cout<<"Answer: "<<answer<<endl;
-    }
-    else
-    {
-        //display error message
-        cout<<"Error on subtract"<<endl;
-    }
+        if(multiply(c1, n1, d1, c2, n2, d2, answer, 10))
+        {
+            //display string with answer
+            cout<<"Answer: "<<answer<<endl;
+        }
+        else
+        {
+            //display error message
+            cout<<"Error on multiply"<<endl;
+        }
 
-    if(multiply(c1, n1, d1, c2, n2, d2, answer, 10))
-    {
-        //display string with answer
-        cout<<"Answer: "<<answer<<endl;
+        if(divide(c1, n1, d1, c2, n2, d2, answer, 10))
+        {
+            //display string with answer
+            cout<<"Answer: "<<answer<<endl;
+        }
+        else
+        {
+            //display error message
+            cout<<"Error on divide"<<endl;
+        }*/
     }
-    else
-    {
-        //display error message
-        cout<<"Error on multiply"<<endl;
-    }
-
-    if(divide(c1, n1, d1, c2, n2, d2, answer, 10))
-    {
-        //display string with answer
-        cout<<"Answer: "<<answer<<endl;
-    }
-    else
-    {
-        //display error message
-        cout<<"Error on divide"<<endl;
-    }
-
     return 0;
 } 
 //--
@@ -200,6 +201,7 @@ bool subtract(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
     int wholeNumber = subtractedNumerator / lcm;
     //get remainder
     int remainder = subtractedNumerator % lcm;
+
     //add whole number before decimal to result
     handleWholeNumber(wholeNumber, result, resultLength);
     //if the whole number is greater than the length given
@@ -234,6 +236,7 @@ bool multiply(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
     int wholeNumber = totalNumerator / totalDenominator;
     //get remainder
     int remainder = totalNumerator % totalDenominator;
+
     //add whole number before decimal to result
     int resultLength = 0;
     handleWholeNumber(wholeNumber, result, resultLength);
@@ -269,6 +272,7 @@ bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int l
     int wholeNumber = totalNumerator / totalDenominator;
     //get remainder
     int remainder = totalNumerator % totalDenominator;
+
     //add whole number before decimal to result
     int resultLength = 0;
     handleWholeNumber(wholeNumber, result, resultLength);
@@ -313,15 +317,27 @@ void handleRemainder(int remainder, int lcm, char result[], int len, int &result
 }
 
 void handleWholeNumber (int wholeNumber, char result[], int &resultLength) {
+    //if 0
     if (wholeNumber == 0) {
         result[resultLength] = '0';
         resultLength++;
     }
+    //if not 0 add all whole numbers
     else {
         while (wholeNumber != 0) {
-            result[resultLength] = '0' + wholeNumber;
-            wholeNumber = wholeNumber / 10;
+            //Get the last digit
+            result[resultLength] = '0' + wholeNumber % 10;
+            //Remove the last digit
+            wholeNumber = wholeNumber / 10;  
             resultLength++;
+        }
+        
+        //Reverse the result to display the digits correctly
+        for (int i = 0, j = resultLength - 1; i < j; i++, j--) {
+            //Reverse
+            char temporaryChar = result[i];
+            result[i] = result[j];
+            result[j] = temporaryChar;
         }
     }
 }
