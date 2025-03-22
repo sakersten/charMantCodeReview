@@ -15,6 +15,7 @@ bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int l
 // characteristic and mantissa helper functions
 bool validString(const char numString[]); 
 
+
 int main()
 {
     //this c-string, or array of 8 characters, ends with the null terminating character '\0'
@@ -24,13 +25,17 @@ int main()
     cout << "0: " << validString("0") << endl; 
     cout << "2342342: " << validString("2342342") << endl; 
     cout << "234.234: " << validString("234.234") << endl; 
-    cout << ".234 :" << validString(".234") << endl;
+    cout << ".234: " << validString(".234") << endl;
     cout << "23.: " << validString("23.") << endl; 
-    cout << "+234 :" << validString("+234") << endl;
+    cout << "+234: " << validString("+234") << endl;
     cout << "-234.2: " << validString("-234.2") << endl; 
-    cout << "-234:" << validString("-234") << endl;
+    cout << "-234: " << validString("-234") << endl;
     cout << "2+3: " << validString("2+3") << endl; 
     cout << "23-: " << validString("23-") << endl; 
+    cout << "2 4: " << validString("2 4") << endl; 
+    cout << "24 : " << validString("24 ") << endl; 
+    cout << " 24: " << validString(" 24") << endl; 
+    cout << " " << validString(" ") << endl; 
 
     const char number[] = "123.456"; 
     int c, n, d;
@@ -164,7 +169,6 @@ bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int l
     
     return true;
 }
-//
 
 // CHARACTERISTIC AND MANTISSA HELPER FUNCTIONS
 
@@ -179,30 +183,39 @@ int skipLeadingSpaces(const char numString[])
     return i; // returns the index of the first non-space character 
 }
 
-// helper function to skip over middle space -> returns false if no middle spaces are found
-bool hasMiddleSpaces(const char numString[])
+// helper function to check if we have any trailing (end) spaces 
+int skipTrailingSpaces(const char numString[])
 {
-    // bool that is set to true when we come across a digit
-    bool foundDigit = false; 
+    int i = 0; 
 
-    for (int i = 0; numString[i] != '\0'; i++)
+    // find the last non-null character
+    while (numString[i] != '\0')
     {
-        if (numString[i] >= '0' && numString[i] <= '9')
-        {
-            foundDigit = true; // found a digit
-        }
-        else if (numString[i] == ' ' && foundDigit)
-        {
-            return true; // a space has been found AFTER a digit
-        }
+        i++; 
     }
-    return false; // no middle spaces were found
+    i--; // step back to the last valid character
+
+    // skip the trailing spaces
+    while (i >= 0 && numString[i] == ' ')
+    {
+        i--; 
+    }
+
+    return i; // return the index of the last non-space character
 }
+
 
 // helper function to check if we have a valid c-string
 bool validString(const char numString[]) 
 {
-    int i = 0; 
+    int i = skipLeadingSpaces(numString); // skip over the leading spaces, if there are any 
+    int lastValidIndex = skipTrailingSpaces(numString); // get the last meaningful character
+
+    // i cannot be larger than lastValidIndex
+    if (i > lastValidIndex)
+    {
+        return false; 
+    }
 
     // check if the first character is valid (digit, +, or -)
     if (numString[i] == '+' || numString[i] == '-')
@@ -211,6 +224,8 @@ bool validString(const char numString[])
     }
 
     bool hasDecimal = false; // keep track of if there is one singular decimal point within the c-string
+    bool foundDigit = false; // to ensure that at least one digit is found
+
 
     // check for an empty string 
     if (numString[i] == '\0')
@@ -219,17 +234,17 @@ bool validString(const char numString[])
     }
 
     // loop through each character in the c-string
-    while (numString[i] != '\0')
+    while (i <= lastValidIndex)
     {
         // check to ensure that the characters are digits, otherwise return false
         if (numString[i] >='0' && numString[i] <= '9')
         {
-            // continue
+            foundDigit = true; 
         }
 
         else if (numString[i] == '.')
         {
-            // we cannot have return decimal occur twice
+            // we cannot have more than one decimal
             if (hasDecimal)
             {
                 return false; 
@@ -242,6 +257,7 @@ bool validString(const char numString[])
             }
         }
 
+        // check for + or - in the middle of the function
         else if (numString[i] == '+' || numString[i] == '-')
         {
             return false; 
@@ -251,17 +267,9 @@ bool validString(const char numString[])
         {
             return false; 
         }
-        i++;
+        i++; // move to the next character 
     }
-    return true; 
+
+    return foundDigit; 
 }
 
-
-// helper function to check for leading spaces
-//void skipLeadingSpaces
-
-// helper function to check 
-//void skipEndSpace
-
-// helper function to 
-//void skipMiddleSpace
