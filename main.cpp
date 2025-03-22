@@ -12,6 +12,10 @@ bool subtract(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
 bool multiply(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len);
 bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len);
 
+//helper functions
+bool checkLength(int currentLength, int maxLength);
+void handleRemainder(int remainder, int lcm, char result[], int len, int &resultLength);
+
 int main()
 {
     //this c-string, or array of 8 characters, ends with the null terminating character '\0'
@@ -143,27 +147,13 @@ bool add(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len)
         resultLength++;
     }
     //if the whole number is greater than the length given
-    if (resultLength > len-1) {
+    if (!checkLength(resultLength, len)) {
         return false;
     }
 
     //add remainder after the decimal place
     if (remainder != 0) {
-        //add decimal place
-        result[resultLength] = '.';
-        resultLength++;
-        int currentLength = resultLength;
-        //loop until length is reached or remainder is 0
-        for (int j = 0; j < len - currentLength - 1 && remainder != 0; j++) {
-            //get the next digit
-            remainder *= 10;
-            int nextDigit = remainder / lcm;
-            //add to result
-            result[resultLength] = '0' + nextDigit;
-            resultLength++;
-            //get next remainder
-            remainder = remainder % lcm;
-        }
+        handleRemainder(remainder, lcm, result, len, resultLength);
     }
     //add newline character to end of result
     result[resultLength] = '\0';
@@ -211,27 +201,13 @@ bool subtract(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
         resultLength++;
     }
     //if the whole number is greater than the length given
-    if (resultLength > len-1) {
+    if (!checkLength(resultLength, len)) {
         return false;
     }
 
     //add remainder after the decimal place
     if (remainder != 0) {
-        //add decimal place
-        result[resultLength] = '.';
-        resultLength++;
-        int currentLength = resultLength;
-        //loop until length is reached or remainder is 0
-        for (int j = 0; j < len - currentLength - 1 && remainder != 0; j++) {
-            //get the next digit
-            remainder *= 10;
-            int nextDigit = remainder / lcm;
-            //add to result
-            result[resultLength] = '0' + nextDigit;
-            resultLength++;
-            //get next remainder
-            remainder = remainder % lcm;
-        }
+        handleRemainder(remainder, lcm, result, len, resultLength);
     }
     //add newline character to end of result
     result[resultLength] = '\0';
@@ -264,27 +240,13 @@ bool multiply(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
         resultLength++;
     }
     //if the whole number is greater than the length given
-    if (resultLength > len-1) {
+    if (!checkLength(resultLength, len)) {
         return false;
     }
 
     //add remainder after the decimal place
     if (remainder != 0) {
-        //add decimal place
-        result[resultLength] = '.';
-        resultLength++;
-        int currentLength = resultLength;
-        //loop until length is reached or remainder is 0
-        for (int j = 0; j < len - currentLength - 1 && remainder != 0; j++) {
-            //get the next digit
-            remainder *= 10;
-            int nextDigit = remainder / totalDenominator;
-            //add to result
-            result[resultLength] = '0' + nextDigit;
-            resultLength++;
-            //get next remainder
-            remainder = remainder % totalDenominator;
-        }
+        handleRemainder(remainder, totalDenominator, result, len, resultLength);
     }
     //add newline character to end of result
     result[resultLength] = '\0';
@@ -323,29 +285,41 @@ bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int l
         }
     }
     //if the whole number is greater than the length given
-    if (resultLength > len-1) {
+    if (!checkLength(resultLength, len)) {
         return false;
     }
 
     //add remainder after the decimal place
     if (remainder != 0) {
-        //add decimal place
-        result[resultLength] = '.';
-        resultLength++;
-        int currentLength = resultLength;
-        //loop until length is reached or remainder is 0
-        for (int j = 0; j < len - currentLength - 1 && remainder != 0; j++) {
-            //get the next digit
-            remainder *= 10;
-            int nextDigit = remainder / totalDenominator;
-            //add to result
-            result[resultLength] = '0' + nextDigit;
-            resultLength++;
-            //get next remainder
-            remainder = remainder % totalDenominator;
-        }
+        handleRemainder(remainder, totalDenominator, result, len, resultLength);
     }
     //add newline character to end of result
     result[resultLength] = '\0';
     return true;
+}
+
+bool checkLength (int currentLength, int maxLength) {
+    if (currentLength > maxLength-1) {
+        return false;
+    }
+    return true;
+}
+
+void handleRemainder(int remainder, int lcm, char result[], int len, int &resultLength)
+{
+    //add decimal place
+    result[resultLength] = '.';
+    resultLength++;
+    // Loop until length is reached or remainder is 0
+    int currentLength = resultLength;
+    for (int j = 0; j < len - currentLength - 1 && remainder != 0; j++) {
+        // Get the next digit
+        remainder *= 10;
+        int nextDigit = remainder / lcm;
+        // Add to result
+        result[resultLength] = '0' + nextDigit;
+        resultLength++;
+        // Get next remainder
+        remainder = remainder % lcm;
+    }
 }
