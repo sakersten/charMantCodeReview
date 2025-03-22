@@ -12,10 +12,12 @@ bool subtract(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
 bool multiply(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len);
 bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len);
 
-//helper functions
+//helper Math functions
 bool checkLength(int currentLength, int maxLength);
 void handleRemainder(int remainder, int lcm, char result[], int len, int &resultLength);
 void handleWholeNumber (int wholeNumber, char result[], int &resultLength);
+void calculateNumerators (int c1, int n1, int d1, int c2, int n2, int d2, int &numeratorFirstNum, int &numeratorSecondNum);
+void AddNegativeSign (int &totalNumerator, char result[], int &resultLength);
 
 int main()
 {
@@ -43,7 +45,7 @@ int main()
     int c1, n1, d1;
     int c2, n2, d2;
 
-    for (int i = 0; i < 100; i++) {
+    for (int i = -2; i < 10; i++) {
         //initialize the values
         c1 = 1;
         n1 = 1;
@@ -51,13 +53,12 @@ int main()
 
         c2 = i;
         n2 = 2;
-        d2 = 3; 
+        d2 = 3;
 
         //if the c-string can hold at least the characteristic
-        /*
         if(add(c1, n1, d1, c2, n2, d2, answer, 10))
         {
-            //display string with answer 4.1666666 (cout stops printing at the null terminating character)
+            //display string with answer
             cout<<"Answer: "<<answer<<endl;
         }
         else
@@ -65,7 +66,6 @@ int main()
             //display error message
             cout<<"Error on add"<<endl;
         }
-        */
         if(subtract(c1, n1, d1, c2, n2, d2, answer, 10))
         {
             cout<<"Answer: "<<answer<<endl;
@@ -75,7 +75,6 @@ int main()
             //display error message
             cout<<"Error on subtract"<<endl;
         }
-/*
         if(multiply(c1, n1, d1, c2, n2, d2, answer, 10))
         {
             //display string with answer
@@ -86,8 +85,6 @@ int main()
             //display error message
             cout<<"Error on multiply"<<endl;
         }
-*/
-/*
         if(divide(c1, n1, d1, c2, n2, d2, answer, 10))
         {
             //display string with answer
@@ -97,7 +94,7 @@ int main()
         {
             //display error message
             cout<<"Error on divide"<<endl;
-        }*/
+        }
     }
         
     return 0;
@@ -121,17 +118,15 @@ bool mantissa(const char numString[], int& numerator, int& denominator)
 bool add(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len)
 {
     //error handling improper fractions and 0 length
-    if (d1 == 0 || d2 == 0 || len == 0) {
+    if (d1 == 0 || d2 == 0 || len == 0 || n1 < 0 || d1 < 0 || n2 < 0 || d2 < 0) {
         return false;
     }
 
     //get the numerators of both numbers
-    //if c is negative do something like c1 * d1 - n1
-    int numeratorFirstNum = c1 * d1 + n1;
-    int numeratorSecondNum = c2 * d2 + n2;
+    int numeratorFirstNum, numeratorSecondNum;
+    calculateNumerators (c1, n1, d1, c2, n2, d2, numeratorFirstNum, numeratorSecondNum);
     //get the total numerator
     int totalNumerator = numeratorFirstNum + numeratorSecondNum;
-
     int lcm = d1;
     //if the denominators are not equal
     if (d1 != d2) {
@@ -143,11 +138,7 @@ bool add(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len)
 
     int resultLength = 0;
     //if negative add the sign
-    if (totalNumerator < 0) {
-        totalNumerator = totalNumerator * -1;
-        result[resultLength] = '-';
-        resultLength++;
-    }
+    AddNegativeSign (totalNumerator, result, resultLength);
 
     //get number before decimal
     int wholeNumber = totalNumerator / lcm;
@@ -173,13 +164,13 @@ bool add(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len)
 bool subtract(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len)
 {
     //error handling improper fractions and 0 length
-    if (d1 == 0 || d2 == 0 || len == 0) {
+    if (d1 == 0 || d2 == 0 || len == 0 || n1 < 0 || d1 < 0 || n2 < 0 || d2 < 0) {
         return false;
     }
 
     //get the numerators of both numbers
-    int numeratorFirstNum = c1 * d1 + n1;
-    int numeratorSecondNum = c2 * d2 + n2;
+    int numeratorFirstNum, numeratorSecondNum;
+    calculateNumerators (c1, n1, d1, c2, n2, d2, numeratorFirstNum, numeratorSecondNum);
     //get the total numerator
     int subtractedNumerator = numeratorFirstNum - numeratorSecondNum;
 
@@ -194,11 +185,7 @@ bool subtract(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
 
     int resultLength = 0;
     //if negative add the sign
-    if (subtractedNumerator < 0) {
-        subtractedNumerator = subtractedNumerator * -1;
-        result[resultLength] = '-';
-        resultLength++;
-    }
+    AddNegativeSign (subtractedNumerator, result, resultLength);
 
     //get number before decimal
     int wholeNumber = subtractedNumerator / lcm;
@@ -224,16 +211,20 @@ bool subtract(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
 bool multiply(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len)
 {
     //error handling improper fractions and 0 length
-    if (d1 == 0 || d2 == 0 || len == 0) {
+    if (d1 == 0 || d2 == 0 || len == 0 || n1 < 0 || d1 < 0 || n2 < 0 || d2 < 0) {
         return false;
     }
 
     //get the numerators of both numbers
-    int numeratorFirstNum = c1 * d1 + n1;
-    int numeratorSecondNum = c2 * d2 + n2;
+    int numeratorFirstNum, numeratorSecondNum;
+    calculateNumerators (c1, n1, d1, c2, n2, d2, numeratorFirstNum, numeratorSecondNum);
     //get the totals
     int totalNumerator = numeratorFirstNum * numeratorSecondNum;
     int totalDenominator = d1 * d2;
+
+    int resultLength = 0;
+    //if negative add the sign
+    AddNegativeSign (totalNumerator, result, resultLength);
 
     //get number before decimal
     int wholeNumber = totalNumerator / totalDenominator;
@@ -241,7 +232,6 @@ bool multiply(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
     int remainder = totalNumerator % totalDenominator;
 
     //add whole number before decimal to result
-    int resultLength = 0;
     handleWholeNumber(wholeNumber, result, resultLength);
     //if the whole number is greater than the length given
     if (!checkLength(resultLength, len)) {
@@ -260,16 +250,31 @@ bool multiply(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
 bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len)
 {
     //error handling improper fractions and 0 length
-    if (d1 == 0 || d2 == 0 || len == 0) {
+    if (d1 == 0 || d2 == 0 || len == 0 || n1 < 0 || d1 < 0 || n2 < 0 || d2 < 0) {
         return false;
     }
 
     //get the numerator and reciprocal of both numbers
-    int numeratorFirstNum = c1 * d1 + n1;
-    int denominatorSecondNum = c2 * d2 + n2;
+    int numeratorFirstNum, denominatorSecondNum;
+    calculateNumerators (c1, n1, d1, c2, n2, d2, numeratorFirstNum, denominatorSecondNum);
     //get the totals, use reciprocal
     int totalNumerator = numeratorFirstNum * d2;
     int totalDenominator = d1 * denominatorSecondNum;
+
+    int resultLength = 0;
+    //if either the numerator or denominator is negative add the sign
+    //if numerator is negative
+    if (totalNumerator < 0 && totalDenominator >= 0) {
+        totalNumerator = totalNumerator * -1;
+        result[resultLength] = '-';
+        resultLength++;
+    }
+    //if denominator is negative
+    else if (totalNumerator >= 0 && totalDenominator < 0) {
+        totalDenominator = totalDenominator * -1;
+        result[resultLength] = '-';
+        resultLength++;
+    }
 
     //get number before decimal
     int wholeNumber = totalNumerator / totalDenominator;
@@ -277,7 +282,6 @@ bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int l
     int remainder = totalNumerator % totalDenominator;
 
     //add whole number before decimal to result
-    int resultLength = 0;
     handleWholeNumber(wholeNumber, result, resultLength);
     //if the whole number is greater than the length given
     if (!checkLength(resultLength, len)) {
@@ -354,5 +358,29 @@ void handleWholeNumber (int wholeNumber, char result[], int &resultLength) {
                 result[j] = temporaryChar;
             }
         }
+    }
+}
+
+void calculateNumerators (int c1, int n1, int d1, int c2, int n2, int d2, int &numeratorFirstNum, int &numeratorSecondNum) {
+    if (c1 < 0) {
+        numeratorFirstNum = c1 * d1 - n1;
+    }
+    else {
+        numeratorFirstNum = c1 * d1 + n1;
+    }
+    if (c2 < 0) {
+        numeratorSecondNum = c2 * d2 - n2;
+    }
+    else {
+        numeratorSecondNum = c2 * d2 + n2;
+    }
+}
+
+void AddNegativeSign (int &totalNumerator, char result[], int &resultLength) {
+    //if numerator is negative add the sign
+    if (totalNumerator < 0) {
+        totalNumerator = totalNumerator * -1;
+        result[resultLength] = '-';
+        resultLength++;
     }
 }
