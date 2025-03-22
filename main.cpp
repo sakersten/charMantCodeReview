@@ -132,14 +132,14 @@ bool add(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len)
     }
 
     //get number before decimal
-    int total = totalNumerator / lcm;
+    int wholeNumber = totalNumerator / lcm;
     //get remainder
     int remainder = totalNumerator % lcm;
     //add whole number before decimal to result
     int resultLength = 0;
-    while (total != 0) {
-        result[resultLength] = '0' + total;
-        total = total / 10;
+    while (wholeNumber != 0) {
+        result[resultLength] = '0' + wholeNumber;
+        wholeNumber = wholeNumber / 10;
         resultLength++;
     }
     //if the whole number is greater than the length given
@@ -201,13 +201,13 @@ bool subtract(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
     }
 
     //get number before decimal
-    int total = subtractedNumerator / lcm;
+    int wholeNumber = subtractedNumerator / lcm;
     //get remainder
     int remainder = subtractedNumerator % lcm;
     //add whole number before decimal to result
-    while (total != 0) {
-        result[resultLength] = '0' + total;
-        total = total / 10;
+    while (wholeNumber != 0) {
+        result[resultLength] = '0' + wholeNumber;
+        wholeNumber = wholeNumber / 10;
         resultLength++;
     }
     //if the whole number is greater than the length given
@@ -253,14 +253,14 @@ bool multiply(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
     int totalDenominator = d1 * d2;
 
     //get number before decimal
-    int total = totalNumerator / totalDenominator;
+    int wholeNumber = totalNumerator / totalDenominator;
     //get remainder
     int remainder = totalNumerator % totalDenominator;
     //add whole number before decimal to result
     int resultLength = 0;
-    while (total != 0) {
-        result[resultLength] = '0' + total;
-        total = total / 10;
+    while (wholeNumber != 0) {
+        result[resultLength] = '0' + wholeNumber;
+        wholeNumber = wholeNumber / 10;
         resultLength++;
     }
     //if the whole number is greater than the length given
@@ -289,28 +289,63 @@ bool multiply(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
     //add newline character to end of result
     result[resultLength] = '\0';
     return true;
-
-
-
-
-
-
-    //hard coded return value to make the code compile
-    //you will have to come up with an algorithm to multiply the two numbers
-    return true;
 }
 //--
 bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len)
 {
-    //you will have to come up with an algorithm to divide the two numbers
-    //hard coded return value to make the main() work
-    result[0] = '0';
-    result[1] = '.';
-    result[2] = '5';
-    result[3] = '6';
-    result[4] = '2';
-    result[5] = '5';
-    result[6] = '\0';
-    
+    //error handling improper fractions and 0 length
+    if (d1 == 0 || d2 == 0 || len == 0) {
+        return false;
+    }
+
+    //get the numerator and reciprocal of both numbers
+    int numeratorFirstNum = c1 * d1 + n1;
+    int denominatorSecondNum = c2 * d2 + n2;
+    //get the totals, use reciprocal
+    int totalNumerator = numeratorFirstNum * d2;
+    int totalDenominator = d1 * denominatorSecondNum;
+
+    //get number before decimal
+    int wholeNumber = totalNumerator / totalDenominator;
+    //get remainder
+    int remainder = totalNumerator % totalDenominator;
+    //add whole number before decimal to result
+    int resultLength = 0;
+    if (wholeNumber == 0) {
+        result[resultLength] = '0';
+        resultLength++;
+    }
+    else {
+        while (wholeNumber != 0) {
+            result[resultLength] = '0' + wholeNumber;
+            wholeNumber = wholeNumber / 10;
+            resultLength++;
+        }
+    }
+    //if the whole number is greater than the length given
+    if (resultLength > len-1) {
+        return false;
+    }
+
+    //add remainder after the decimal place
+    if (remainder != 0) {
+        //add decimal place
+        result[resultLength] = '.';
+        resultLength++;
+        int currentLength = resultLength;
+        //loop until length is reached or remainder is 0
+        for (int j = 0; j < len - currentLength - 1 && remainder != 0; j++) {
+            //get the next digit
+            remainder *= 10;
+            int nextDigit = remainder / totalDenominator;
+            //add to result
+            result[resultLength] = '0' + nextDigit;
+            resultLength++;
+            //get next remainder
+            remainder = remainder % totalDenominator;
+        }
+    }
+    //add newline character to end of result
+    result[resultLength] = '\0';
     return true;
 }
