@@ -15,6 +15,7 @@ bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int l
 //helper functions
 bool checkLength(int currentLength, int maxLength);
 void handleRemainder(int remainder, int lcm, char result[], int len, int &resultLength);
+void handleWholeNumber (int wholeNumber, char result[], int &resultLength);
 
 int main()
 {
@@ -150,17 +151,7 @@ bool add(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len)
     int remainder = totalNumerator % lcm;
 
     //add whole number before decimal to result
-    if (wholeNumber == 0) {
-        result[resultLength] = '0';
-        resultLength++;
-    }
-    else {
-        while (wholeNumber != 0) {
-            result[resultLength] = '0' + wholeNumber;
-            wholeNumber = wholeNumber / 10;
-            resultLength++;
-        }
-    }
+    handleWholeNumber(wholeNumber, result, resultLength);
     //if the whole number is greater than the length given
     if (!checkLength(resultLength, len)) {
         return false;
@@ -210,17 +201,7 @@ bool subtract(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
     //get remainder
     int remainder = subtractedNumerator % lcm;
     //add whole number before decimal to result
-    if (wholeNumber == 0) {
-        result[resultLength] = '0';
-        resultLength++;
-    }
-    else {
-        while (wholeNumber != 0) {
-            result[resultLength] = '0' + wholeNumber;
-            wholeNumber = wholeNumber / 10;
-            resultLength++;
-        }
-    }
+    handleWholeNumber(wholeNumber, result, resultLength);
     //if the whole number is greater than the length given
     if (!checkLength(resultLength, len)) {
         return false;
@@ -255,17 +236,7 @@ bool multiply(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
     int remainder = totalNumerator % totalDenominator;
     //add whole number before decimal to result
     int resultLength = 0;
-    if (wholeNumber == 0) {
-        result[resultLength] = '0';
-        resultLength++;
-    }
-    else {
-        while (wholeNumber != 0) {
-            result[resultLength] = '0' + wholeNumber;
-            wholeNumber = wholeNumber / 10;
-            resultLength++;
-        }
-    }
+    handleWholeNumber(wholeNumber, result, resultLength);
     //if the whole number is greater than the length given
     if (!checkLength(resultLength, len)) {
         return false;
@@ -300,17 +271,7 @@ bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int l
     int remainder = totalNumerator % totalDenominator;
     //add whole number before decimal to result
     int resultLength = 0;
-    if (wholeNumber == 0) {
-        result[resultLength] = '0';
-        resultLength++;
-    }
-    else {
-        while (wholeNumber != 0) {
-            result[resultLength] = '0' + wholeNumber;
-            wholeNumber = wholeNumber / 10;
-            resultLength++;
-        }
-    }
+    handleWholeNumber(wholeNumber, result, resultLength);
     //if the whole number is greater than the length given
     if (!checkLength(resultLength, len)) {
         return false;
@@ -348,5 +309,19 @@ void handleRemainder(int remainder, int lcm, char result[], int len, int &result
         resultLength++;
         // Get next remainder
         remainder = remainder % lcm;
+    }
+}
+
+void handleWholeNumber (int wholeNumber, char result[], int &resultLength) {
+    if (wholeNumber == 0) {
+        result[resultLength] = '0';
+        resultLength++;
+    }
+    else {
+        while (wholeNumber != 0) {
+            result[resultLength] = '0' + wholeNumber;
+            wholeNumber = wholeNumber / 10;
+            resultLength++;
+        }
     }
 }
