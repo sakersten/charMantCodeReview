@@ -45,15 +45,16 @@ int main()
 
     for (int i = 0; i < 100; i++) {
         //initialize the values
-        c1 = i;
+        c1 = 1;
         n1 = 1;
         d1 = 2;
 
-        c2 = 2;
+        c2 = i;
         n2 = 2;
         d2 = 3; 
 
         //if the c-string can hold at least the characteristic
+        /*
         if(add(c1, n1, d1, c2, n2, d2, answer, 10))
         {
             //display string with answer 4.1666666 (cout stops printing at the null terminating character)
@@ -64,7 +65,7 @@ int main()
             //display error message
             cout<<"Error on add"<<endl;
         }
-/*
+        */
         if(subtract(c1, n1, d1, c2, n2, d2, answer, 10))
         {
             cout<<"Answer: "<<answer<<endl;
@@ -74,7 +75,7 @@ int main()
             //display error message
             cout<<"Error on subtract"<<endl;
         }
-
+/*
         if(multiply(c1, n1, d1, c2, n2, d2, answer, 10))
         {
             //display string with answer
@@ -85,7 +86,8 @@ int main()
             //display error message
             cout<<"Error on multiply"<<endl;
         }
-
+*/
+/*
         if(divide(c1, n1, d1, c2, n2, d2, answer, 10))
         {
             //display string with answer
@@ -97,6 +99,7 @@ int main()
             cout<<"Error on divide"<<endl;
         }*/
     }
+        
     return 0;
 } 
 //--
@@ -317,7 +320,7 @@ void handleRemainder(int remainder, int lcm, char result[], int len, int &result
 }
 
 void handleWholeNumber (int wholeNumber, char result[], int &resultLength) {
-    //if 0
+    //if 0 just display 0
     if (wholeNumber == 0) {
         result[resultLength] = '0';
         resultLength++;
@@ -333,11 +336,23 @@ void handleWholeNumber (int wholeNumber, char result[], int &resultLength) {
         }
         
         //Reverse the result to display the digits correctly
-        for (int i = 0, j = resultLength - 1; i < j; i++, j--) {
-            //Reverse
-            char temporaryChar = result[i];
-            result[i] = result[j];
-            result[j] = temporaryChar;
+        //if the value is negative, start at 1
+        if ( result[0] == '-') {
+            for (int i = 1, j = resultLength - 1; i < j; i++, j--) {
+                //Reverse
+                char temporaryChar = result[i];
+                result[i] = result[j];
+                result[j] = temporaryChar;
+            }
+        }
+        //if the value is positive, start at 0
+        else {
+            for (int i = 0, j = resultLength - 1; i < j; i++, j--) {
+                //Reverse
+                char temporaryChar = result[i];
+                result[i] = result[j];
+                result[j] = temporaryChar;
+            }
         }
     }
 }
