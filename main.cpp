@@ -16,7 +16,8 @@ bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int l
 int skipLeadingSpaces(const char numString[]); 
 int skipTrailingSpaces(const char numString[]); 
 bool validString(const char numString[]); 
-void extractCharacteristic(const char numString[], int&c); 
+void extractCharacteristic(const char numString[], int& c); 
+void extractMantissa(const char numString[], int& numerator, int& denominator); 
 
 int main()
 {
@@ -30,12 +31,15 @@ int main()
     for (int i = 0; i < 7; i++)
     {
         int characteristic; 
+        int numerator; 
+        int denominator; 
         
         // check if the string is valid, and return characteristic if it is
         if (validString(testCases[i]))
         {
             extractCharacteristic(testCases[i], characteristic); 
-            cout << "input:" << testCases[i] << "| characteristic: " << characteristic << endl; 
+            extractMantissa(testCases[i], numerator, denominator); 
+            cout << "input:" << testCases[i] << " | characteristic: " << characteristic << " | mantissa: " << numerator << "/" << denominator << endl; 
         }
 
         // if the string is NOT valid, print "invalid"
@@ -290,10 +294,8 @@ bool validString(const char numString[])
     return foundDigit; // will return true if we have found a singular digit (that was not set to false by any of our conditions above)
 }
 
-// plotting out ideas for helper functions -> will fill in
-
 // CHARACTERISTIC helper function to extract the integer part of the number (before decimal point)
-void extractCharacteristic(const char numString[], int&c)
+void extractCharacteristic(const char numString[], int& c)
 {
     int i = skipLeadingSpaces(numString); // set our index to wherever the first actual value is
     bool isNegative = false; // check for negative numbers
@@ -329,5 +331,49 @@ void extractCharacteristic(const char numString[], int&c)
 }
 
 // MANTISSA helper function to extract the fractional part of the number (after the decimal point)
+void extractMantissa(const char numString[], int& numerator, int& denominator)
+{  
+    // check if the string is valid 
+    if (!validString(numString))
+    {
+        return; // do nothing if the string is invalid
+    }
 
-// helper function to determine the denominator of the mantissa
+    int i = skipLeadingSpaces(numString); // set our index to wherever the first actual value is
+
+    // default values
+    numerator = 0; 
+    denominator = 1; 
+
+    // check for the sign (if there is one) and skip over it
+    if (numString[i] == '+' || numString[i] == '-')
+    {
+        i++; 
+    }
+
+    // skip through the characteristic part
+    while (numString[i] >= '0' && numString[i] <= '9')
+    {
+        i++; 
+    }
+
+    // if there is no decimal point, the mantissa is 0/1
+    if (numString[i] != '.')
+    {
+        return; // nothing changes
+    }
+
+    i++; // move over the decimal point
+
+    // parse the mantissa (after the decimal point)
+    while (numString[i] >= '0' && numString[i] <= '9')
+    {
+        // builds the numerator by multiplying by 10 and adding the current digit
+        numerator = numerator * 10 + (numString[i] - '0'); 
+
+        // increase the denominator by a factor of 10 for each digit
+        denominator = denominator * 10; 
+
+        i++; // move to the next digit
+    }
+}
