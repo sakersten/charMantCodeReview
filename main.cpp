@@ -13,8 +13,10 @@ bool multiply(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
 bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len);
 
 // characteristic and mantissa helper functions
+int skipLeadingSpaces(const char numString[]); 
+int skipTrailingSpaces(const char numString[]); 
 bool validString(const char numString[]); 
-
+void extractCharacteristic(const char numString[], int&c); 
 
 int main()
 {
@@ -22,21 +24,28 @@ int main()
     //['1', '2', '3', '.', '4', '5', '6', '\0']
     
     // testing
-    cout << "0: " << validString("0") << endl; 
-    cout << "2342342: " << validString("2342342") << endl; 
-    cout << "234.234: " << validString("234.234") << endl; 
-    cout << ".234: " << validString(".234") << endl;
-    cout << "23.: " << validString("23.") << endl; 
-    cout << "+234: " << validString("+234") << endl;
-    cout << "-234.2: " << validString("-234.2") << endl; 
-    cout << "-234: " << validString("-234") << endl;
-    cout << "2+3: " << validString("2+3") << endl; 
-    cout << "23-: " << validString("23-") << endl; 
-    cout << "2 4: " << validString("2 4") << endl; 
-    cout << "24 : " << validString("24 ") << endl; 
-    cout << " 24: " << validString(" 24") << endl; 
-    cout << " " << validString(" ") << endl; 
+    char testCases[][10] = {"123.456", "-42.89", "+15.2", ".234", "234", "-123.234", "0.45", "-0.342"}; 
 
+    // just cycle through
+    for (int i = 0; i < 7; i++)
+    {
+        int characteristic; 
+        
+        // check if the string is valid, and return characteristic if it is
+        if (validString(testCases[i]))
+        {
+            extractCharacteristic(testCases[i], characteristic); 
+            cout << "input:" << testCases[i] << "| characteristic: " << characteristic << endl; 
+        }
+
+        // if the string is NOT valid, print "invalid"
+        else
+        {
+            cout << "input:" << testCases[i] << "| invalid " << endl; 
+        }
+    }
+    
+    /*
     const char number[] = "123.456"; 
     int c, n, d;
 
@@ -90,12 +99,18 @@ int main()
         //display error message
         cout<<"Error on divide"<<endl;
     }
+    */
 
     return 0;
 } 
 //--
 bool characteristic(const char numString[], int& c)
 {
+    // check for valid string
+
+    // if string is valid, then extract characteristic
+    // if string is not valid, do nothing 
+
     //hard coded return value to make the main() work
     //c = 123;
     //return true;
@@ -105,21 +120,23 @@ bool characteristic(const char numString[], int& c)
 //--
 bool mantissa(const char numString[], int& numerator, int& denominator)
 {
+    // valid string check here
+
+    // DONE parse string without strings
+    // DONE spaces on either end -> skip over 
+    // DONE spaces in the middle between digits -> problem 
+    // DONE string could have decimal OR not
+    // DONE uniary + or - start -> only FIRST character can be that 
+    // TODO check for valid string first, if all rules are met, then actually execute the two functions
+    // TODO successive powers of 10
+    // DONE yes or no valid string helper
+    // TODO start and end positions of characteristic, another for mantissa
+    // TODO helper function for math (multiply by 10)
+
+
     // hard coded return value to make the main() work
-
-    // parse string without strings
-    // spaces on either end -> skip over
-    // spaces in the middle between digits -> problem
-    // string could have decimal OR not
-    // uniary + or - start -> only FIRST character can be that 
-    // check for valid string first, if all rules are met, then actually execute the two functions
-    // successive powers of 10
-    // yes or no valid string helper
-    // start and end positions of characteristic, another for mantissa
-    // helper function for math (multiply by 10)
-
-    numerator = 456;
-    denominator = 1000;
+    // numerator = 456;
+    // denominator = 1000;
     return true;
 }
 //--
@@ -172,15 +189,17 @@ bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int l
 
 // CHARACTERISTIC AND MANTISSA HELPER FUNCTIONS
 
-// helper function to skip over leading spaces
+// helper function to skip over leading (start) spaces
 int skipLeadingSpaces(const char numString[])
 {
     int i = 0; 
+
+    // while loop will run if there are spaces in the beginning
     while (numString[i] == ' ')
     {
         i++; 
     }
-    return i; // returns the index of the first non-space character 
+    return i; // return the index of the first non-space character 
 }
 
 // helper function to check if we have any trailing (end) spaces 
@@ -204,7 +223,6 @@ int skipTrailingSpaces(const char numString[])
     return i; // return the index of the last non-space character
 }
 
-
 // helper function to check if we have a valid c-string
 bool validString(const char numString[]) 
 {
@@ -225,7 +243,6 @@ bool validString(const char numString[])
 
     bool hasDecimal = false; // keep track of if there is one singular decimal point within the c-string
     bool foundDigit = false; // to ensure that at least one digit is found
-
 
     // check for an empty string 
     if (numString[i] == '\0')
@@ -251,7 +268,7 @@ bool validString(const char numString[])
             }
 
             // ensure the decimal is not at the beginning or end, otherwise return false
-            if (i == 0 || numString[i+1] == '\0')
+            if (i == 0 || numString[i + 1] == '\0')
             {
                 return false; 
             }
@@ -270,6 +287,47 @@ bool validString(const char numString[])
         i++; // move to the next character 
     }
 
-    return foundDigit; 
+    return foundDigit; // will return true if we have found a singular digit (that was not set to false by any of our conditions above)
 }
 
+// plotting out ideas for helper functions -> will fill in
+
+// CHARACTERISTIC helper function to extract the integer part of the number (before decimal point)
+void extractCharacteristic(const char numString[], int&c)
+{
+    int i = skipLeadingSpaces(numString); // set our index to wherever the first actual value is
+    bool isNegative = false; // check for negative numbers
+
+    // check if the string is valid 
+    if (!validString(numString))
+    {
+        return; // do nothing if the string is invalid
+    }
+
+    // check for the sign (if there is one)
+    if (numString[i] == '+' || numString[i] == '-')
+    {
+        isNegative = (numString[i] == '-'); // update negative if needed
+        i++; // move to the next character
+    }
+
+    c = 0; // initialize characteristic
+
+    // parse the integer part before the decimal
+    while (numString[i] >= '0' && numString[i] <= '9')
+    {
+        // multiply c by 10 to shift left (increase place value) before adding new digit
+        c = c * 10 + (numString[i] - '0'); 
+        i++; 
+    }
+
+    // apply the negative sign if needed
+    if (isNegative)
+    {
+        c = -c; 
+    }
+}
+
+// MANTISSA helper function to extract the fractional part of the number (after the decimal point)
+
+// helper function to determine the denominator of the mantissa
