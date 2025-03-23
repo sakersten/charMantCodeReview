@@ -24,33 +24,7 @@ int main()
     //this c-string, or array of 8 characters, ends with the null terminating character '\0'
     //['1', '2', '3', '.', '4', '5', '6', '\0']
     
-    // testing
-    char testCases[][10] = {"123.456", "-42.89", "+15.2", ".234", "234", "-123.234", "0.45", "-0.342"}; 
-
-    // just cycle through
-    for (int i = 0; i < 7; i++)
-    {
-        int characteristic; 
-        int numerator; 
-        int denominator; 
-        
-        // check if the string is valid, and return characteristic if it is
-        if (validString(testCases[i]))
-        {
-            extractCharacteristic(testCases[i], characteristic); 
-            extractMantissa(testCases[i], numerator, denominator); 
-            cout << "input:" << testCases[i] << " | characteristic: " << characteristic << " | mantissa: " << numerator << "/" << denominator << endl; 
-        }
-
-        // if the string is NOT valid, print "invalid"
-        else
-        {
-            cout << "input:" << testCases[i] << "| invalid " << endl; 
-        }
-    }
-    
-    /*
-    const char number[] = "123.456"; 
+    const char number[] = "123."; //"123.456"; 
     int c, n, d;
 
     //if both conversions from c-string to integers can take place
@@ -103,45 +77,38 @@ int main()
         //display error message
         cout<<"Error on divide"<<endl;
     }
-    */
 
     return 0;
 } 
 //--
 bool characteristic(const char numString[], int& c)
 {
-    // check for valid string
-
-    // if string is valid, then extract characteristic
-    // if string is not valid, do nothing 
-
-    //hard coded return value to make the main() work
-    //c = 123;
-    //return true;
-    
-    return true;
+    // return false if the input is NOT valid
+    if (!validString(numString))
+    {
+        return false; 
+    }
+    // otherwise, run the function and return true
+    else 
+    {
+        extractCharacteristic(numString, c); 
+        return true;
+    }
 }
 //--
 bool mantissa(const char numString[], int& numerator, int& denominator)
 {
-    // valid string check here
-
-    // DONE parse string without strings
-    // DONE spaces on either end -> skip over 
-    // DONE spaces in the middle between digits -> problem 
-    // DONE string could have decimal OR not
-    // DONE uniary + or - start -> only FIRST character can be that 
-    // TODO check for valid string first, if all rules are met, then actually execute the two functions
-    // TODO successive powers of 10
-    // DONE yes or no valid string helper
-    // TODO start and end positions of characteristic, another for mantissa
-    // TODO helper function for math (multiply by 10)
-
-
-    // hard coded return value to make the main() work
-    // numerator = 456;
-    // denominator = 1000;
-    return true;
+    // return false if the input is NOT valid
+    if (!validString(numString))
+    {
+        return false; 
+    }
+    // otherwise, run the function and return true
+    else 
+    {
+        extractMantissa(numString, numerator, denominator); 
+        return true;
+    }
 }
 //--
 bool add(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len)
