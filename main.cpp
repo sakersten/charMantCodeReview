@@ -14,7 +14,7 @@ bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int l
 
 //helper Math functions
 bool checkLength(int currentLength, int maxLength);
-void handleRemainder(int remainder, int lcm, char result[], int len, int &resultLength);
+void handleRemainder(int remainder, int lcd, char result[], int len, int &resultLength);
 void handleWholeNumber (int wholeNumber, char result[], int &resultLength);
 void calculateNumerators (int c1, int n1, int d1, int c2, int n2, int d2, int &numeratorFirstNum, int &numeratorSecondNum);
 void AddNegativeSign (int &totalNumerator, char result[], int &resultLength);
@@ -45,9 +45,9 @@ int main()
     int c1, n1, d1;
     int c2, n2, d2;
 
-    for (int i = -2; i < 10; i++) {
+    for (int i = -2; i < 1; i++) {
         //initialize the values
-        c1 = 1;
+        c1 = i;
         n1 = 1;
         d1 = 2;
 
@@ -127,12 +127,12 @@ bool add(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len)
     calculateNumerators (c1, n1, d1, c2, n2, d2, numeratorFirstNum, numeratorSecondNum);
     //get the total numerator
     int totalNumerator = numeratorFirstNum + numeratorSecondNum;
-    int lcm = d1;
+    int lcd = d1;
     //if the denominators are not equal
     if (d1 != d2) {
         //get least common denominator
-        lcm = d1 * d2;
-        //get the total numerator with the lcm
+        lcd = d1 * d2;
+        //get the total numerator with the lcd
         totalNumerator = (numeratorFirstNum * d2) + (numeratorSecondNum * d1);
     }
 
@@ -141,9 +141,9 @@ bool add(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len)
     AddNegativeSign (totalNumerator, result, resultLength);
 
     //get number before decimal
-    int wholeNumber = totalNumerator / lcm;
+    int wholeNumber = totalNumerator / lcd;
     //get remainder
-    int remainder = totalNumerator % lcm;
+    int remainder = totalNumerator % lcd;
 
     //add whole number before decimal to result
     handleWholeNumber(wholeNumber, result, resultLength);
@@ -154,9 +154,9 @@ bool add(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int len)
 
     //add remainder after the decimal place
     if (remainder != 0) {
-        handleRemainder(remainder, lcm, result, len, resultLength);
+        handleRemainder(remainder, lcd, result, len, resultLength);
     }
-    //add newline character to end of result
+    //add null terminator to end of result
     result[resultLength] = '\0';
     return true;
 }
@@ -174,12 +174,12 @@ bool subtract(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
     //get the total numerator
     int subtractedNumerator = numeratorFirstNum - numeratorSecondNum;
 
-    int lcm = d1;
+    int lcd = d1;
     //if the denominators are not equal
     if (d1 != d2) {
         //get least common denominator
-        lcm = d1 * d2;
-        //get the total numerator with the lcm
+        lcd = d1 * d2;
+        //get the total numerator with the lcd
         subtractedNumerator = (numeratorFirstNum * d2) - (numeratorSecondNum * d1);
     }
 
@@ -188,9 +188,9 @@ bool subtract(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
     AddNegativeSign (subtractedNumerator, result, resultLength);
 
     //get number before decimal
-    int wholeNumber = subtractedNumerator / lcm;
+    int wholeNumber = subtractedNumerator / lcd;
     //get remainder
-    int remainder = subtractedNumerator % lcm;
+    int remainder = subtractedNumerator % lcd;
 
     //add whole number before decimal to result
     handleWholeNumber(wholeNumber, result, resultLength);
@@ -201,9 +201,9 @@ bool subtract(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
 
     //add remainder after the decimal place
     if (remainder != 0) {
-        handleRemainder(remainder, lcm, result, len, resultLength);
+        handleRemainder(remainder, lcd, result, len, resultLength);
     }
-    //add newline character to end of result
+    //add null terminator to end of result
     result[resultLength] = '\0';
     return true;
 }
@@ -242,7 +242,7 @@ bool multiply(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int
     if (remainder != 0) {
         handleRemainder(remainder, totalDenominator, result, len, resultLength);
     }
-    //add newline character to end of result
+    //add null terminator to end of result
     result[resultLength] = '\0';
     return true;
 }
@@ -292,7 +292,7 @@ bool divide(int c1, int n1, int d1, int c2, int n2, int d2, char result[], int l
     if (remainder != 0) {
         handleRemainder(remainder, totalDenominator, result, len, resultLength);
     }
-    //add newline character to end of result
+    //add null terminator to end of result
     result[resultLength] = '\0';
     return true;
 }
@@ -304,7 +304,7 @@ bool checkLength (int currentLength, int maxLength) {
     return true;
 }
 
-void handleRemainder(int remainder, int lcm, char result[], int len, int &resultLength)
+void handleRemainder(int remainder, int lcd, char result[], int len, int &resultLength)
 {
     //add decimal place
     result[resultLength] = '.';
@@ -314,12 +314,12 @@ void handleRemainder(int remainder, int lcm, char result[], int len, int &result
     for (int j = 0; j < len - currentLength - 1 && remainder != 0; j++) {
         // Get the next digit
         remainder *= 10;
-        int nextDigit = remainder / lcm;
+        int nextDigit = remainder / lcd;
         // Add to result
         result[resultLength] = '0' + nextDigit;
         resultLength++;
         // Get next remainder
-        remainder = remainder % lcm;
+        remainder = remainder % lcd;
     }
 }
 
@@ -342,20 +342,20 @@ void handleWholeNumber (int wholeNumber, char result[], int &resultLength) {
         //Reverse the result to display the digits correctly
         //if the value is negative, start at 1
         if ( result[0] == '-') {
-            for (int i = 1, j = resultLength - 1; i < j; i++, j--) {
+            for (int beginningChar = 1, endChar = resultLength - 1; beginningChar < endChar; beginningChar++, endChar--) {
                 //Reverse
-                char temporaryChar = result[i];
-                result[i] = result[j];
-                result[j] = temporaryChar;
+                char temporaryChar = result[beginningChar];
+                result[beginningChar] = result[endChar];
+                result[endChar] = temporaryChar;
             }
         }
         //if the value is positive, start at 0
         else {
-            for (int i = 0, j = resultLength - 1; i < j; i++, j--) {
+            for (int beginningChar = 0, endChar = resultLength - 1; beginningChar < endChar; beginningChar++, endChar--) {
                 //Reverse
-                char temporaryChar = result[i];
-                result[i] = result[j];
-                result[j] = temporaryChar;
+                char temporaryChar = result[beginningChar];
+                result[beginningChar] = result[endChar];
+                result[endChar] = temporaryChar;
             }
         }
     }
